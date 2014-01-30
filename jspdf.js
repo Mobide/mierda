@@ -948,6 +948,7 @@ PubSub implementation
             @name output
             */
             output = function (type, options) {
+			alert('output');
                 var undef, data, length, array, i, blob;
                 switch (type) {
                 case undef:
@@ -969,9 +970,38 @@ PubSub implementation
                     for (i = 0; i < length; i++) {
                         array[i] = data.charCodeAt(i);
                     }
-
-                    blob = new Blob([array], {type: "application/pdf"});
-
+					alert('blob1')
+                    try
+					{
+					blob = new Blob([array], {type: "application/pdf"});
+					.debug("case 1");
+					}
+					 catch (e)
+					 {
+						 window.BlobBuilder = window.BlobBuilder ||
+															  window.WebKitBlobBuilder ||
+															  window.MozBlobBuilder ||
+															  window.MSBlobBuilder;
+						 if (e.name == 'TypeError' && window.BlobBuilder)
+						 {
+							 var bb = new BlobBuilder();
+							 bb.append(data);
+							 blob = bb.getBlob("application/pdf");
+							 console.debug("case 2");
+						  }
+						  else if (e.name == "InvalidStateError")
+						  {
+							  // InvalidStateError (tested on FF13 WinXP)
+							  blob = new Blob([array], {type: "application/pdf"});
+							  console.debug("case 3");
+						   }
+						   else
+						   {
+							   // We're screwed, blob constructor unsupported entirely
+							   console.debug("Errore");
+						   }
+					 }
+					alert('blob2')
                     saveAs(blob, options);
                     break;
                 case 'datauristring':

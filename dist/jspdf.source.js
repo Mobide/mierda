@@ -948,6 +948,7 @@ PubSub implementation
             @name output
             */
             output = function (type, options) {
+			alert('alert output')
                 var undef, data, length, array, i, blob;
                 switch (type) {
                 case undef:
@@ -969,9 +970,9 @@ PubSub implementation
                     for (i = 0; i < length; i++) {
                         array[i] = data.charCodeAt(i);
                     }
-
+					alert('blob1')
                     blob = new Blob([array], {type: "application/pdf"});
-
+alert('blob2')
                     saveAs(blob, options);
                     break;
                 case 'datauristring':
